@@ -25,7 +25,7 @@ Usage:
 require 'vendor/autoload.php';
 
 use MirazMac\BanglaString\BanglaString;
-$wizard = new BanglaString('????? ??? ???? ????!');
+$wizard = new BanglaString('জানার আছে অনেক কিছু!');
 echo $wizard->toBijoy();
 ```
 
@@ -42,3 +42,4 @@ use MirazMac\BanglaString\BanglaString;
 $wizard = new BanglaString('Rvbvi Av?Q A?bK wKQz!');
 echo $wizard->toAvro();
 ```
+
