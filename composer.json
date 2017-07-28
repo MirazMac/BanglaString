@@ -1,0 +1,24 @@
+{
+    "name": "mirazmac/bangla-string",
+    "type": "library",
+    "description": "A wannabe all-in-all Bangla String Manupulation Library!",
+    "keywords": ["unicode", "bijoy to avro", "avro to bijoy", "bijoy", "avro", "phonetic", "bangla", "string"],
+    "homepage": "https://github.com/mirazmac/banglastring",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Miraz Mac",
+            "email": "mirazmac@gmail.com",
+            "homepage": "https://mirazmac.info",
+            "role": "Original Author"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "MirazMac\\BanglaString\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=5.4.0"
+    }
+}
