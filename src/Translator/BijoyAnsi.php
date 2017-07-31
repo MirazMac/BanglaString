@@ -17,7 +17,7 @@ class BijoyAnsi
      *
      * @var object
      */
-    public static $instance = null;
+    protected static $instance = null;
 
 
     private function __construct()

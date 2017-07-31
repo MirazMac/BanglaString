@@ -17,7 +17,7 @@ class AvroUnicode
      *
      * @var object
      */
-    public static $instance = null;
+    protected static $instance = null;
 
     /**
      * String to be translated
