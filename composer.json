@@ -3,7 +3,7 @@
     "type": "library",
     "description": "A wannabe all-in-all Bangla String Manupulation Library!",
     "keywords": ["unicode", "bijoy to avro", "avro to bijoy", "bijoy", "avro", "phonetic", "bangla", "string"],
-    "homepage": "https://github.com/mirazmac/banglastring",
+    "homepage": "https://github.com/mirazmac/BanglaString",
     "license": "MIT",
     "authors": [
         {
