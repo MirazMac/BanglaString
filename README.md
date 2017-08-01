@@ -11,6 +11,14 @@ Hey there! **BanglaString** is willing to be the full featured, all in all, "Ben
 composer require mirazmac/bangla-string
 ```
 
+### Manual Install
+
+Download the latest release from [Releases](https://github.com/mirazmac/BanglaString/releases). Extract and require **src/autoload.php** in your code. But it's highly recommended to use [Composer](http://getcomposer.org).
+
+```php
+require 'src/autoload.php';
+```
+
 
 
 ## Supported Translators
@@ -42,4 +50,3 @@ use MirazMac\BanglaString\BanglaString;
 $wizard = new BanglaString('Rvbvi Av?Q A?bK wKQz!');
 echo $wizard->toAvro();
 ```
-
