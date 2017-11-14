@@ -10,7 +10,7 @@ namespace MirazMac\BanglaString\Translator;
 * @package MirazMac\BanglaString
 */
 
-class AvroUnicode
+class AvroUnicode implements TranslatorInterface
 {
     /**
      * Static instance of the class
@@ -71,16 +71,13 @@ class AvroUnicode
         // Post-replacement
         // Replace kars from the very beginning of the string
         $start_regex = "/\A{$kars}/um";
-        $string = preg_replace_callback($start_regex, [$this, 'translateKarsCallbackStart'],
-                        $string);
+        $string = preg_replace_callback($start_regex, [$this, 'translateKarsCallbackStart'], $string);
 
         $space_before_regex = "/\s{$kars}/um";
-        $string = preg_replace_callback($space_before_regex, [$this, 'translateKarsCallbackSpaceBefore'],
-                        $string);
+        $string = preg_replace_callback($space_before_regex, [$this, 'translateKarsCallbackSpaceBefore'], $string);
 
         $anywhere_regex = "/{$kars}/um";
-        $string = preg_replace_callback($anywhere_regex, [$this, 'translateKarsCallback'],
-                        $string);
+        $string = preg_replace_callback($anywhere_regex, [$this, 'translateKarsCallback'], $string);
 
         // Finally hand-over the string!
         return $string;

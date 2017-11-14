@@ -10,7 +10,7 @@ namespace MirazMac\BanglaString\Translator;
 * @package MirazMac\BanglaString
 */
 
-class BijoyAnsi
+class BijoyAnsi implements TranslatorInterface
 {
     /**
      * Static instance of the class
@@ -64,8 +64,7 @@ class BijoyAnsi
         // Build the regex pattern for post replacement
         $regex = "/{$kars}/um";
         // Post-replacement - All kars
-        $string = preg_replace_callback($regex, [$this, 'translateKarsCallback'],
-                        $string);
+        $string = preg_replace_callback($regex, [$this, 'translateKarsCallback'], $string);
         // Finally hand-over the string!
         return $string;
     }
