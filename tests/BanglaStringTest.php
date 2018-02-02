@@ -20,7 +20,7 @@ class BanglaStringTest extends TestCase
 
     public function testTranslate()
     {
-        $this->assertInstanceOf('MirazMac\BanglaString\BanglaString', $this->banglaStr::translate('hello'));
+        $this->assertInstanceOf('MirazMac\BanglaString\BanglaString', BanglaString::translate('hello'));
     }
 
     public function testToBijoy()
