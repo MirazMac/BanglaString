@@ -16,8 +16,6 @@ use MirazMac\BanglaString\Translator\AvroToBijoy\CharacterMap;
 
 class Translator implements TranslatorContract
 {
-    use SingletonTrait;
-
     /**
      * Translates Bijoy ANSI text to Avro
      *
@@ -32,6 +30,7 @@ class Translator implements TranslatorContract
 
         // Pre-replacement - All the letters, numbers and juktabornas..
         $string = str_replace(array_values($charmap), array_keys($charmap), $string);
+
 
         // Build the regex pattern for post replacement
         $regex = "/{$kars}/um";
