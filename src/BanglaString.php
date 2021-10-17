@@ -56,7 +56,7 @@ class BanglaString
      */
     public function toBijoy()
     {
-        return Translator\AvroUnicode::getInstance()->translate($this->string);
+        return Translator\AvroToBijoy\Translator::getInstance()->translate($this->string);
     }
 
     /**
@@ -66,6 +66,6 @@ class BanglaString
      */
     public function toAvro()
     {
-        return Translator\BijoyAnsi::getInstance()->translate($this->string);
+        return Translator\BijoyToAvro\Translator::getInstance()->translate($this->string);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace MirazMac\BanglaString\Translator;
+namespace MirazMac\BanglaString\Translator\AvroToBijoy;
 
 /**
  * Stores List of Character Maps to use across the library

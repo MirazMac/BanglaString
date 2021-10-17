@@ -1,6 +1,10 @@
 <?php
 
-namespace MirazMac\BanglaString\Translator;
+namespace MirazMac\BanglaString\Translator\BijoyToAvro;
+
+use MirazMac\BanglaString\Traits\SingletonTrait;
+use MirazMac\BanglaString\Contracts\TranslatorContract;
+use MirazMac\BanglaString\Translator\AvroToBijoy\CharacterMap;
 
 /**
 * Translates Bengali text written in Bijoy ANSI to Avro Unicode
@@ -10,41 +14,9 @@ namespace MirazMac\BanglaString\Translator;
 * @package MirazMac\BanglaString
 */
 
-class BijoyAnsi implements TranslatorInterface
+class Translator implements TranslatorContract
 {
-    /**
-     * Static instance of the class
-     *
-     * @var object
-     */
-    protected static $instance = null;
-
-
-    private function __construct()
-    {
-    }
-
-    private function __wakeup()
-    {
-    }
-
-    private function __clone()
-    {
-    }
-
-    /**
-     * Get an instance of the class
-     *
-     * @return object
-     */
-    public static function getInstance()
-    {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
+    use SingletonTrait;
 
     /**
      * Translates Bijoy ANSI text to Avro
