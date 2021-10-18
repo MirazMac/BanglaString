@@ -2,12 +2,11 @@
 
 namespace MirazMac\BanglaString\Translator\AvroToBijoy;
 
-use MirazMac\BanglaString\Traits\SingletonTrait;
 use MirazMac\BanglaString\Contracts\TranslatorContract;
-use MirazMac\BanglaString\Translator\AvroToBijoy\CharacterMap;
+use MirazMac\BanglaString\Translator\AvroToBijoy\KeyMapping;
 
 /**
-* Translates Bengali strings written in Avro Unicode to Bijoy ANSI
+* Translates Bengali strings written in Avro to Bijoy Classic (Based on Bijoy 71)
 *
 * @version 0.1
 * @since 0.1
@@ -17,113 +16,154 @@ use MirazMac\BanglaString\Translator\AvroToBijoy\CharacterMap;
 class Translator implements TranslatorContract
 {
     /**
-     * Translates Avro Unicode string to Bijoy ANSI
+     * Translates Avro Unicode string to Bijoy Classic ANSI
      *
      * @param  string $string Text written via avro
      * @return string
      */
     public function translate($string)
     {
-        // Import character maps
-        $charmap = CharacterMap::getLetterCharMap();
-        $kars = CharacterMap::getBijoyKars();
+        $string = $this->fixOddChars($string);
 
-        // Pre-replacement - All the letters, numbers and juktabornas..
-        $string = str_replace(array_keys($charmap), array_values($charmap), $string);
+        $string = $this->fixUnicode($string);
 
+        $string = $this->replaceConjuctions($string);
 
-        // Post-replacement
-        // Replace kars from the very beginning of the string
-        $start_regex = "/\A{$kars}/um";
-        $string = preg_replace_callback($start_regex, [$this, 'translateKarsCallbackStart'], $string);
+        $string = $this->swapKarsLocation($string);
 
-        $space_before_regex = "/\s{$kars}/um";
-        $string = preg_replace_callback($space_before_regex, [$this, 'translateKarsCallbackSpaceBefore'], $string);
+        $string = $this->handleSurroundingKars($string);
 
-        $anywhere_regex = "/{$kars}/um";
-        $string = preg_replace_callback($anywhere_regex, [$this, 'translateKarsCallback'], $string);
+        $ruleSet = KeyMapping::getRules();
 
-        // Finally hand-over the string!
+        $string =  str_replace(
+            array_keys($ruleSet),
+            array_values($ruleSet),
+            $string
+        );
+
         return $string;
     }
 
     /**
-     * Callback method for self::translate(), for strings that has "kar" at the
-     * very beginning of the string
+     * Handles kars that surrounds a character
      *
-     * @param  array  $match The matches
-     * @return string
-     */
-    protected function translateKarsCallbackStart($match = [])
-    {
-        switch ($match[2]) {
-            case 'ি':
-                return 'w' . $match[1];
-
-            case 'ে':
-                return '†' . $match[1];
-
-            case 'ো':
-                return '†' . $match[1] . 'v';
-
-            case 'ৈ':
-                return 'ˆ' . $match[1];
-
-            case 'ৌ':
-                return '†' . $match[1] . 'Š';
-        }
-    }
-
-   /**
-     * Callback method for self::translate(), for strings that has "kar"
-     * with a space before
+     * @param      string  $string  The string
      *
-     * @param  array  $match The matches
-     * @return string
+     * @return     string
      */
-    protected function translateKarsCallbackSpaceBefore($match = [])
+    protected function handleSurroundingKars($string)
     {
-        switch ($match[2]) {
-            case 'ি':
-                return ' w' . $match[1];
+        // We are accounting for characters that has space before
+        // but for the regex we only need the kars
+        // so trim the spaces, and use only unique keys
+        $rules = array_keys(KeyMapping::KAR_AROUND_CHAR_RULES);
+        $rules = array_map('trim', $rules);
+        $rules = array_unique($rules);
 
-            case 'ে':
-                return ' †' . $match[1];
+        $kars = join('', $rules);
+        $prepends = join('', KeyMapping::KAR_AROUND_CHAR_RULES_PREPENDS);
 
-            case 'ো':
-                return ' †' . $match[1] . 'v';
+        $regEx = "/(\s)?(?P<char>[^{$kars}])(?P<b>[{$prepends}])?(?P<kar>[{$kars}])/um";
 
-            case 'ৈ':
-                return ' ˆ' . $match[1];
+        return preg_replace_callback(
+            $regEx,
+            function ($match) {
+                $space = '';
+                $key = $match['kar'];
 
-            case 'ৌ':
-                return ' †'.$match[1].'Š';
-        }
+                if ($count = mb_strlen($match[1])) {
+                    $space = ' ';
+                    $key = $space . $key;
+                }
+
+
+                $rule = KeyMapping::KAR_AROUND_CHAR_RULES[$key];
+                $char = $match['char'];
+                if (isset($match['b'])) {
+                    $char .= $match['b'];
+                }
+                $rule = str_replace('<char>', $char, $rule);
+
+                return $space . $rule;
+            },
+            $string
+        );
     }
 
     /**
-     * Callback method for self::translate(), for strings that has "kar" at anywhere in the string
+     * Swaps the kars location
      *
-     * @param  array  $match The matches
-     * @return string
+     * @param      string  $string  The string
+     *
+     * @return     string
      */
-    protected function translateKarsCallback($match = [])
+    protected function swapKarsLocation($string)
     {
-        switch ($match[2]) {
-            case 'ি':
-                return 'w' . $match[1];
+        $kars = join('', KeyMapping::KARS_BEFORE_CHAR);
+        $prepends = join('', KeyMapping::KARS_BEFORE_PREPEND_CHAR);
 
-            case 'ে':
-                return '‡' . $match[1];
+        $regEx = "/(?P<b>[{$prepends}])?(?P<char>[^{$kars}])(?P<kar>[{$kars}])/um";
 
-            case 'ো':
-                return '‡' . $match[1] . 'v';
+        return preg_replace_callback(
+            $regEx,
+            function ($match) {
+                $return = $match['kar'];
+                if (isset($match['b'])) {
+                    $return .= $match['b'];
+                }
+                $return .= $match['char'];
+                return $return;
+            },
+            $string
+        );
+    }
 
-            case 'ৈ':
-                return '‰' . $match[1];
 
-            case 'ৌ':
-                return '‡'.$match[1].'Š';
-        }
+    /**
+     * Replaces conjuctions using KeyMapping::SORTED_CONJ_RULES
+     *
+     * @param      string  $string  The string
+     *
+     * @return     string
+     */
+    protected function replaceConjuctions($string)
+    {
+        return str_replace(
+            array_keys(KeyMapping::SORTED_CONJ_RULES),
+            array_values(KeyMapping::SORTED_CONJ_RULES),
+            $string
+        );
+    }
+
+    /**
+     * Normalizes some odd chars by replacing them using KeyMapping::FIX_ODD_CHARS
+     *
+     * @param      string  $string  The string
+     *
+     * @return     string
+     */
+    protected function fixOddChars($string)
+    {
+        return str_replace(
+            array_keys(KeyMapping::FIX_ODD_CHARS),
+            array_values(KeyMapping::FIX_ODD_CHARS),
+            $string
+        );
+    }
+
+    /**
+     * Normalizes some unicode chars by replacing them using KeyMapping::FIX_UNICODE
+     *
+     * @param      string  $string  The string
+     *
+     * @return     string
+     */
+    protected function fixUnicode($string)
+    {
+        return str_replace(
+            array_keys(KeyMapping::FIX_UNICODE),
+            array_values(KeyMapping::FIX_UNICODE),
+            $string
+        );
     }
 }

@@ -2,7 +2,6 @@
 
 namespace MirazMac\BanglaString\Translator\BijoyToAvro;
 
-use MirazMac\BanglaString\Traits\SingletonTrait;
 use MirazMac\BanglaString\Contracts\TranslatorContract;
 use MirazMac\BanglaString\Translator\AvroToBijoy\CharacterMap;
 
@@ -27,6 +26,10 @@ class Translator implements TranslatorContract
         // Import character maps
         $charmap = CharacterMap::getLetterCharMap();
         $kars = CharacterMap::getAvroKars();
+
+        $string = str_replace(['…', '~', 'z'], ['ৃ', 'ূ', 'ু'], $string);
+
+
 
         // Pre-replacement - All the letters, numbers and juktabornas..
         $string = str_replace(array_values($charmap), array_keys($charmap), $string);
