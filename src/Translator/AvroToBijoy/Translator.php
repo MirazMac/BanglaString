@@ -101,17 +101,23 @@ class Translator implements TranslatorContract
     {
         $kars = join('', KeyMapping::KARS_BEFORE_CHAR);
         $prepends = join('', KeyMapping::KARS_BEFORE_PREPEND_CHAR);
-
-        $regEx = "/(?P<b>[{$prepends}])?(?P<char>[^{$kars}])(?P<kar>[{$kars}])/um";
+        $edge = join('', KeyMapping::KARS_BEFORE_EDGE_CASE);
+        $regEx = "/(?<b>{$prepends})?(?P<char>[^{$kars}])(?<z>{$edge})?(?P<kar>[{$kars}])/um";
 
         return preg_replace_callback(
             $regEx,
             function ($match) {
+               // r($match);
                 $return = $match['kar'];
-                if (isset($match['b'])) {
+                if (!empty($match['b'])) {
                     $return .= $match['b'];
                 }
                 $return .= $match['char'];
+
+                if (!empty($match['z'])) {
+                    $return .= $match['z'];
+                }
+
                 return $return;
             },
             $string

@@ -581,4 +581,6 @@ class KeyMapping
      * @var        array
      */
     const KARS_BEFORE_PREPEND_CHAR = ['š'];
+
+    const KARS_BEFORE_EDGE_CASE = ['¨'];
 }
