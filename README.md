@@ -1,9 +1,6 @@
 # BanglaString
-A wannabe all-in-all Bangla String Manupulation Library!
+A wannabe all-in-all Bangla String manipulation/transformation library for PHP.
 
-
-
-Hey there! **BanglaString** is willing to be the full featured, all in all, "Bengali" text manipulation library, for PHP. Right now, at its core, it supports translating aka converting Bengali text to **Avro Unicode** from **Bijoy ANSI** and vice-versa. However, in future, we are planning to add more Translator to its core.
 
 ### Install via composer
 
@@ -23,30 +20,24 @@ require 'src/autoload.php';
 
 ## Supported Translators
 
-### AvroUnicode
+### AvroToBijoy
 
-Takes Bengali strings written in Avro Unicode and translates into Bijoy ANSI
+Takes Bengali strings written in Avro Unicode and translates into Bijoy Classic ANSI
 
 Usage:
 
 ```php
-require 'vendor/autoload.php';
-
-use MirazMac\BanglaString\BanglaString;
-$wizard = new BanglaString('জানার আছে অনেক কিছু!');
-echo $wizard->toBijoy();
+$translator = new \MirazMac\BanglaString\Translator\AvroToBijoy\Translator;
+echo $translator->translate('জানার আছে অনেক কিছু');
 ```
 
-### BijoyAnsi
+### BijoyToAvro
 
-Takes Bengali strings written in Bijoy ANSI and translates into Avro Unicode
+Takes Bengali strings written in Bijoy Classic ANSI and translates into Avro Unicode
 
 Usage:
 
 ```php
-require 'vendor/autoload.php';
-
-use MirazMac\BanglaString\BanglaString;
-$wizard = new BanglaString('Rvbvi Av?Q A?bK wKQz!');
-echo $wizard->toAvro();
+$translator = new \MirazMac\BanglaString\Translator\BijoyToAvro\Translator;
+echo $translator->translate('Rvbvi Av?Q A?bK wKQz!');
 ```
