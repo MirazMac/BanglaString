@@ -3,7 +3,8 @@
 namespace MirazMac\BanglaString\Translator\BijoyToAvro;
 
 use MirazMac\BanglaString\Contracts\TranslatorContract;
-use MirazMac\BanglaString\Translator\AvroToBijoy\CharacterMap;
+use MirazMac\BanglaString\Translator\AvroToBijoy\KeyMapping;
+use MirazMac\BanglaString\Translator\BijoyToAvro\CharacterMap;
 
 /**
 * Translates Bengali text written in Bijoy ANSI to Avro Unicode
@@ -26,13 +27,12 @@ class Translator implements TranslatorContract
         // Import character maps
         $charmap = CharacterMap::getLetterCharMap();
         $kars = CharacterMap::getAvroKars();
-
-        $string = str_replace(['…', '~', 'z'], ['ৃ', 'ূ', 'ু'], $string);
-
-
+        $def = $string;
 
         // Pre-replacement - All the letters, numbers and juktabornas..
-        $string = str_replace(array_values($charmap), array_keys($charmap), $string);
+        $string = str_replace(array_keys($charmap), array_values($charmap), $string);
+        //
+
 
 
         // Build the regex pattern for post replacement
@@ -57,6 +57,8 @@ class Translator implements TranslatorContract
 
             case '†':
                 return $match[2] . 'ে'; // A~ kar
+            case 'ˆ':
+                return $match[2] . 'ৈ'; // A~ kar
 
             case '‡':
                 return $match[2] . 'ে'; // A~ Kar ( Bijoy has 2 of 'em )
