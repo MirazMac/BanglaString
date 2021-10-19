@@ -28,6 +28,11 @@ class BanglaString
      */
     protected $string;
 
+    /**
+     * Translator instances
+     *
+     * @var        array
+     */
     protected $translators = [];
 
     /**
@@ -49,13 +54,20 @@ class BanglaString
      * This is identical as self::__construct(), but the difference is it allows to call the method  statically
      *
      * @param string $string The text to be converted
-     * @return object
+     * @return self
      */
     public static function translate($string)
     {
         return new self($string);
     }
 
+    /**
+     * Gets the translator.
+     *
+     * @param      string  $name   The name
+     *
+     * @return      \MirazMac\BanglaString\Contracts\TranslatorContract
+     */
     protected function getTranslator($name)
     {
         if (!isset($this->translators[$name])) {
