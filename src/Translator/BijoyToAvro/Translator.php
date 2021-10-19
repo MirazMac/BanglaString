@@ -1,6 +1,10 @@
 <?php
 
-namespace MirazMac\BanglaString\Translator;
+namespace MirazMac\BanglaString\Translator\BijoyToAvro;
+
+use MirazMac\BanglaString\Contracts\TranslatorContract;
+use MirazMac\BanglaString\Translator\AvroToBijoy\KeyMapping;
+use MirazMac\BanglaString\Translator\BijoyToAvro\CharacterMap;
 
 /**
 * Translates Bengali text written in Bijoy ANSI to Avro Unicode
@@ -10,42 +14,8 @@ namespace MirazMac\BanglaString\Translator;
 * @package MirazMac\BanglaString
 */
 
-class BijoyAnsi implements TranslatorInterface
+class Translator implements TranslatorContract
 {
-    /**
-     * Static instance of the class
-     *
-     * @var object
-     */
-    protected static $instance = null;
-
-
-    private function __construct()
-    {
-    }
-
-    private function __wakeup()
-    {
-    }
-
-    private function __clone()
-    {
-    }
-
-    /**
-     * Get an instance of the class
-     *
-     * @return object
-     */
-    public static function getInstance()
-    {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
     /**
      * Translates Bijoy ANSI text to Avro
      *
@@ -57,9 +27,13 @@ class BijoyAnsi implements TranslatorInterface
         // Import character maps
         $charmap = CharacterMap::getLetterCharMap();
         $kars = CharacterMap::getAvroKars();
+        $def = $string;
 
         // Pre-replacement - All the letters, numbers and juktabornas..
-        $string = str_replace(array_values($charmap), array_keys($charmap), $string);
+        $string = str_replace(array_keys($charmap), array_values($charmap), $string);
+        //
+
+
 
         // Build the regex pattern for post replacement
         $regex = "/{$kars}/um";
@@ -83,6 +57,8 @@ class BijoyAnsi implements TranslatorInterface
 
             case '†':
                 return $match[2] . 'ে'; // A~ kar
+            case 'ˆ':
+                return $match[2] . 'ৈ'; // A~ kar
 
             case '‡':
                 return $match[2] . 'ে'; // A~ Kar ( Bijoy has 2 of 'em )

@@ -2,10 +2,15 @@
 
 namespace MirazMac\BanglaString;
 
+use MirazMac\BanglaString\Translator\AvroToBijoy\Translator as AvroToBijoyTranslator;
+use MirazMac\BanglaString\Translator\BijoyToAvro\Translator as BijoyToAvroTranslator;
+
 /**
 * BanglaString
 *
-* A wannabe all-in-all Bangla String Manupulation Library!
+* This is not an ideal way to use this, but when I created this I knew very little about OOP.
+* You should directly import the Translator classes and use them as such.
+* However this will stay as is for backwards compatibility reasons.
 *
 * @author Miraz Mac <mirazmac@gmail.com>
 * @link https://mirazmac.info Author Homepage
@@ -22,6 +27,13 @@ class BanglaString
      * @var string
      */
     protected $string;
+
+    /**
+     * Translator instances
+     *
+     * @var        array
+     */
+    protected $translators = [];
 
     /**
      * Create a new BanglaString instance
@@ -42,11 +54,27 @@ class BanglaString
      * This is identical as self::__construct(), but the difference is it allows to call the method  statically
      *
      * @param string $string The text to be converted
-     * @return object
+     * @return self
      */
     public static function translate($string)
     {
         return new self($string);
+    }
+
+    /**
+     * Gets the translator.
+     *
+     * @param      string  $name   The name
+     *
+     * @return      \MirazMac\BanglaString\Contracts\TranslatorContract
+     */
+    protected function getTranslator($name)
+    {
+        if (!isset($this->translators[$name])) {
+            $this->translators[$name] = new $name();
+        }
+
+        return $this->translators[$name];
     }
 
     /**
@@ -56,7 +84,7 @@ class BanglaString
      */
     public function toBijoy()
     {
-        return Translator\AvroUnicode::getInstance()->translate($this->string);
+        return $this->getTranslator(AvroToBijoyTranslator::class)->translate($this->string);
     }
 
     /**
@@ -66,6 +94,6 @@ class BanglaString
      */
     public function toAvro()
     {
-        return Translator\BijoyAnsi::getInstance()->translate($this->string);
+        return $this->getTranslator(BijoyToAvroTranslator::class)->translate($this->string);
     }
 }
